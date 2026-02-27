@@ -62,7 +62,7 @@ def test_iframe(driver):
 
 
 def test_alert(driver):
-    alertButton = driver.find_element(By.CSS_SELECTOR, '[onclick="windowAlertFunction()"]')
+    alertButton = driver.find_element(By.XPATH, Locators.alertButton)
     # alertButton = driver.find_element(By.NAME,'Click To Open Window Alert')
     ActionChains(driver).scroll_to_element(alertButton).perform()
     assert alertButton.is_displayed()
@@ -75,19 +75,20 @@ def test_alert(driver):
 
 
 def test_dropdown(driver):
-    drop_down_element = driver.find_element(By.CSS_SELECTOR, '[id="cars"]')
-    drop_down = Select(driver.find_element(By.CSS_SELECTOR, '[id="cars"]'))
+    drop_down_element = driver.find_element(By.CSS_SELECTOR, Locators.dropdown)
+    drop_down = Select(driver.find_element(By.CSS_SELECTOR, Locators.dropdown))
     ActionChains(driver).scroll_to_element(drop_down_element).perform()
     # adding sleep just to see scroll actually happens and then person further actions
     time.sleep(3)
     drop_down.select_by_visible_text('Audi')
+    driver.get_screenshot_as_png()
 
 
 def test_uploadFile(driver):
-    fileupload = driver.find_element(By.CSS_SELECTOR, '[id="myFile"]')
+    fileupload = driver.find_element(By.CSS_SELECTOR, Locators.fileUpload)
     ActionChains(driver).scroll_to_element(fileupload).perform()
     time.sleep(3)
-    driver.find_element(By.CSS_SELECTOR, '[id="myFile"]').send_keys(
+    driver.find_element(By.CSS_SELECTOR, Locators.fileUpload).send_keys(
         "C:\/Users\shivam_acharya\PycharmProjects\Python_Selenium\pytest.ini")
     time.sleep(3)
 
@@ -99,3 +100,13 @@ def test_tabledata(driver):
     cm = CommonMethods(driver)
     usernameList = cm.getColumnData(columnId)
     print(usernameList)
+    mainWindow = driver.current_window_handle
+    windows = driver.window_handles
+    driver.switch_to.window(windows[1])
+    driver.switch_to.window(mainWindow)
+
+def test_shadowDom(driver):
+    elm = driver.find_element(By.CSS_SELECTOR, Locators.sd_element)
+    shadowRoot = elm.shadow_root
+    username = shadowRoot.find_element(By.CSS_SELECTOR, Locators.sd_usernameInput).send_keys("dsfdsfdsfds")
+    time.sleep(3)
