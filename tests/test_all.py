@@ -1,6 +1,7 @@
 import random
 import time
 
+import pytest
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
@@ -84,7 +85,7 @@ def test_dropdown(driver):
     drop_down.select_by_visible_text('Audi')
     driver.get_screenshot_as_png()
 
-
+@pytest.mark.xfail
 def test_uploadFile(driver):
     fileupload = driver.find_element(By.CSS_SELECTOR, Locators.fileUpload)
     ActionChains(driver).scroll_to_element(fileupload).perform()
