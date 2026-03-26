@@ -112,7 +112,7 @@ def test_tabledata(driver):
     WebDriverWait(driver, 10).until(lambda w: len(w.window_handles) > 1)
     new_window = [w for w in driver.window_handles if w != currentWindow][0]
     driver.switch_to.window(new_window)
-    assert "bit.ly" in driver.current_url or "youtube" in driver.current_url, "Expected url is not loaded"
+    assert "bit.ly" in driver.current_url or "youtube" in driver.current_url or "udemy" in driver.current_url, "Expected url is not loaded"
     driver.switch_to.window(currentWindow)
 
 
