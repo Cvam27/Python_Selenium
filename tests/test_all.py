@@ -1,3 +1,4 @@
+import random
 import time
 
 from selenium.webdriver import ActionChains
@@ -5,8 +6,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
-from locators.all_locators import Locators, customColumn
-from page_objects.common import CommonMethods
+from locators.all_locators import Locators, customColumnLocatorGenerator
+from page_objects.common_page import CommonMethods
 
 
 def test_current_url(driver):
@@ -94,19 +95,38 @@ def test_uploadFile(driver):
 
 
 def test_tabledata(driver):
-    table = driver.find_element(By.CSS_SELECTOR, Locators.table)
-    columnId = customColumn(3) #use index id to get column data
+    # Verify table data
+    table = driver.find_element(By.CSS_SELECTOR, Locators.userTable)
     ActionChains(driver).scroll_to_element(table).perform()
+    columnDataLocator, columnHeaderLocator = customColumnLocatorGenerator(random.randrange(2, 5))
     cm = CommonMethods(driver)
-    usernameList = cm.getColumnData(columnId)
-    print(usernameList)
-    mainWindow = driver.current_window_handle
-    windows = driver.window_handles
-    driver.switch_to.window(windows[1])
-    driver.switch_to.window(mainWindow)
+    columnData, columnHeader = cm.getColumnData(columnDataLocator, columnHeaderLocator)
+    print(f"\nData for column {columnHeader}: ", columnData)
+    assert columnData, f"\nData for column {columnData} is missing"
+    assert columnHeader, f"\n{columnHeader} Column header name missing "
+
+    # Verify Username link navigation
+    currentWindow = driver.current_window_handle
+    cm.clickOnRandomUserInTable()
+    WebDriverWait(driver, 10).until(lambda w: len(w.window_handles) > 1)
+    new_window = [w for w in driver.window_handles if w != currentWindow][0]
+    driver.switch_to.window(new_window)
+    assert "bit.ly" in driver.current_url or "youtube" in driver.current_url, "Expected url is not loaded"
+    driver.switch_to.window(currentWindow)
+
 
 def test_shadowDom(driver):
     elm = driver.find_element(By.CSS_SELECTOR, Locators.sd_element)
     shadowRoot = elm.shadow_root
-    username = shadowRoot.find_element(By.CSS_SELECTOR, Locators.sd_usernameInput).send_keys("dsfdsfdsfds")
-    time.sleep(3)
+    shadowRoot.find_element(By.CSS_SELECTOR, Locators.sd_usernameInput).send_keys("dsfdsfdsfds")
+    time.sleep(3)  #todo
+
+
+def test_tableSearching(driver):
+    sortTable = driver.find_element(By.CSS_SELECTOR, Locators.searchableTable)
+    ActionChains(driver).scroll_to_element(sortTable).perform()
+    assert sortTable.is_displayed()
+    cm = CommonMethods(driver)
+    OSResult = cm.searchTableDataByOS(search_string="mac")
+    print(OSResult)
+    assert all(item == "mac" for item in OSResult), f"found different item in {OSResult}"

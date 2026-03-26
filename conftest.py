@@ -1,14 +1,15 @@
 import pytest
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 
-options = Options()
-# options.add_argument(argument="--headless=new")
-options.add_argument(argument="--start-maximized")
+
+# options = Options()
+# options.add_argument(argument="--start-maximized")
+# # options.add_argument(argument="--headless=new")
 
 @pytest.fixture
 def driver():
-    driver = webdriver.Chrome(options=options)
+    driver = webdriver.Chrome()
+    driver.maximize_window()
     driver.get("https://selectorshub.com/xpath-practice-page/")
     yield driver
     driver.quit()
