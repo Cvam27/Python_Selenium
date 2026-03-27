@@ -1,6 +1,6 @@
 import random
 import time
-
+import os
 import pytest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
@@ -9,6 +9,10 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 from locators.all_locators import Locators, customColumnLocatorGenerator
 from page_objects.common_page import CommonMethods
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 def test_current_url(driver):
@@ -47,22 +51,22 @@ def test_iframe(driver):
     # test nested iframe
     nested_iframe = driver.find_element(By.CSS_SELECTOR, '[id="pact2"]')
     driver.switch_to.frame(nested_iframe)
-    print(driver.find_element(By.CSS_SELECTOR, '[id="connect"]').text)
+    logger.info(driver.find_element(By.CSS_SELECTOR, '[id="connect"]').text)
 
     # switch back to parent iframe
     driver.switch_to.parent_frame()
-    # print(driver.find_element(By.CSS_SELECTOR,'[id="connect"]').text) # expect to be failed
-    print(driver.find_element(By.CSS_SELECTOR, '[id="lost"]').text)
+    # logger.info(driver.find_element(By.CSS_SELECTOR,'[id="connect"]').text) # expect to be failed
+    logger.info(driver.find_element(By.CSS_SELECTOR, '[id="lost"]').text)
 
     # Switch to Default content
     driver.switch_to.default_content()
-    # print(driver.find_element(By.CSS_SELECTOR, '[id="lost"]').text) # expect to be failed
-    print(
+    # logger.info(driver.find_element(By.CSS_SELECTOR, '[id="lost"]').text) # expect to be failed
+    logger.info(
         driver.find_element(By.CSS_SELECTOR, '[class*="elementor-heading-title"]').text
     )
 
     # get count of all elements with same id
-    print(
+    logger.info(
         len(driver.find_elements(By.CSS_SELECTOR, '[class*="elementor-heading-title"]'))
     )
 
@@ -77,7 +81,7 @@ def test_alert(driver):
     alertButton.click()
     # WebDriverWait(driver,2).until(EC.alert_is_present())
     # driver.get_screenshot_as_png()
-    print(driver.switch_to.alert.text)
+    logger.info(driver.switch_to.alert.text)
 
 
 def test_dropdown(driver):
@@ -90,7 +94,7 @@ def test_dropdown(driver):
     driver.get_screenshot_as_png()
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail(os.getenv("CI") == "true", reason="Expect fail on CI")
 def test_uploadFile(driver):
     fileupload = driver.find_element(By.CSS_SELECTOR, Locators.fileUpload)
     ActionChains(driver).scroll_to_element(fileupload).perform()
@@ -110,7 +114,7 @@ def test_tabledata(driver):
     )
     cm = CommonMethods(driver)
     columnData, columnHeader = cm.getColumnData(columnDataLocator, columnHeaderLocator)
-    print(f"\nData for column {columnHeader}: ", columnData)
+    logger.info(f"\nData for column {columnHeader}: %s", columnData)
     assert columnData, f"\nData for column {columnData} is missing"
     assert columnHeader, f"\n{columnHeader} Column header name missing "
 
@@ -138,7 +142,7 @@ def test_shadowDom(driver):
     )
     SR_UsernameInput.send_keys("dsfdsfdsfds")
     time.sleep(3)
-    print(SR_UsernameInput.get_property("value"))
+    logger.info("Value: %s", SR_UsernameInput.get_property("value"))
 
 
 def test_tableSearching(driver):
@@ -147,7 +151,7 @@ def test_tableSearching(driver):
     assert sortTable.is_displayed()
     cm = CommonMethods(driver)
     OSResult = cm.searchTableDataByOS(search_string="mac")
-    print(OSResult)
+    logger.info(OSResult)
     assert all(
         item == "mac" for item in OSResult
     ), f"found different item in {OSResult}"
