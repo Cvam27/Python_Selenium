@@ -1,4 +1,4 @@
-def customColumnLocatorGenerator(column_id :int):
+def customColumnLocatorGenerator(column_id: int):
     columnData = f'[id="resultTable"] tr > td:nth-child({column_id})'
     columnHeader = f'[id="resultTable"] th:nth-child({column_id})'
     return columnData, columnHeader
@@ -21,8 +21,9 @@ class Locators:
     jsDropdown = '[class="dropbtn"]'
     jsDropdownContent = '[class="dropdown-content"] a'
 
+    # Date Picker
+    datePicker = '[name="the_date"]'
 
-
-#     Shadow dom elements
+    # Shadow dom elements
     sd_element = '[id="userName"]'
     sd_usernameInput = '[id="kils"]'

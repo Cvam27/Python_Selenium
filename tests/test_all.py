@@ -12,7 +12,7 @@ from page_objects.common_page import CommonMethods
 import logging
 
 
-logger = logging.getLogger(__name__)
+log = logging.getLogger(__name__)
 
 
 def test_current_url(driver):
@@ -51,22 +51,22 @@ def test_iframe(driver):
     # test nested iframe
     nested_iframe = driver.find_element(By.CSS_SELECTOR, '[id="pact2"]')
     driver.switch_to.frame(nested_iframe)
-    logger.info(driver.find_element(By.CSS_SELECTOR, '[id="connect"]').text)
+    log.info(driver.find_element(By.CSS_SELECTOR, '[id="connect"]').text)
 
     # switch back to parent iframe
     driver.switch_to.parent_frame()
     # logger.info(driver.find_element(By.CSS_SELECTOR,'[id="connect"]').text) # expect to be failed
-    logger.info(driver.find_element(By.CSS_SELECTOR, '[id="lost"]').text)
+    log.info(driver.find_element(By.CSS_SELECTOR, '[id="lost"]').text)
 
     # Switch to Default content
     driver.switch_to.default_content()
     # logger.info(driver.find_element(By.CSS_SELECTOR, '[id="lost"]').text) # expect to be failed
-    logger.info(
+    log.info(
         driver.find_element(By.CSS_SELECTOR, '[class*="elementor-heading-title"]').text
     )
 
     # get count of all elements with same id
-    logger.info(
+    log.info(
         len(driver.find_elements(By.CSS_SELECTOR, '[class*="elementor-heading-title"]'))
     )
 
@@ -81,7 +81,7 @@ def test_alert(driver):
     alertButton.click()
     # WebDriverWait(driver,2).until(EC.alert_is_present())
     # driver.get_screenshot_as_png()
-    logger.info(driver.switch_to.alert.text)
+    log.info(driver.switch_to.alert.text)
 
 
 def test_dropdown(driver):
@@ -94,7 +94,7 @@ def test_dropdown(driver):
     drop_down.select_by_visible_text("Audi")
     selectedOption = drop_down.first_selected_option.text
     assert "Audi" in selectedOption
-    logger.info("Selected option is: %s", selectedOption)
+    log.info("Selected option is: %s", selectedOption)
 
     # JS dropdown
     jsDropdown = driver.find_element(By.CSS_SELECTOR, Locators.jsDropdown)
@@ -104,7 +104,7 @@ def test_dropdown(driver):
     )
     assert len(jsDropdownContent) == 3
     for item in jsDropdownContent:
-        logger.info(item.text)
+        log.info(item.text)
         assert item.is_displayed and item.is_enabled
 
     before_windows = len(driver.window_handles)
@@ -133,7 +133,7 @@ def test_tabledata(driver):
     )
     cm = CommonMethods(driver)
     columnData, columnHeader = cm.getColumnData(columnDataLocator, columnHeaderLocator)
-    logger.info(f"\nData for column {columnHeader}: %s", columnData)
+    log.info(f"\nData for column {columnHeader}: %s", columnData)
     assert columnData, f"\nData for column {columnData} is missing"
     assert columnHeader, f"\n{columnHeader} Column header name missing "
 
@@ -161,7 +161,7 @@ def test_shadowDom(driver):
     )
     SR_UsernameInput.send_keys("dsfdsfdsfds")
     time.sleep(3)
-    logger.info("Value: %s", SR_UsernameInput.get_property("value"))
+    log.info("Value: %s", SR_UsernameInput.get_property("value"))
 
 
 def test_tableSearching(driver):
@@ -170,7 +170,15 @@ def test_tableSearching(driver):
     assert sortTable.is_displayed()
     cm = CommonMethods(driver)
     OSResult = cm.searchTableDataByOS(search_string="mac")
-    logger.info(OSResult)
+    log.info(OSResult)
     assert all(
         item == "mac" for item in OSResult
     ), f"found different item in {OSResult}"
+
+
+def test_datepicker(driver):
+    datePicker = driver.find_element(By.CSS_SELECTOR, Locators.datePicker)
+    ActionChains(driver).scroll_to_element(datePicker).perform()
+    datePicker.send_keys("27-11-1995")
+    time.sleep(3)
+    log.info(datePicker.get_property("value"))
