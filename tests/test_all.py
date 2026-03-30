@@ -85,13 +85,32 @@ def test_alert(driver):
 
 
 def test_dropdown(driver):
+    # Regular dropdown with Select tag
     drop_down_element = driver.find_element(By.CSS_SELECTOR, Locators.dropdown)
     drop_down = Select(driver.find_element(By.CSS_SELECTOR, Locators.dropdown))
     ActionChains(driver).scroll_to_element(drop_down_element).perform()
     # adding sleep just to see scroll actually happens and then person further actions
     time.sleep(3)
     drop_down.select_by_visible_text("Audi")
-    driver.get_screenshot_as_png()
+    selectedOption = drop_down.first_selected_option.text
+    assert "Audi" in selectedOption
+    logger.info("Selected option is: %s", selectedOption)
+
+    # JS dropdown
+    jsDropdown = driver.find_element(By.CSS_SELECTOR, Locators.jsDropdown)
+    ActionChains(driver).move_to_element(jsDropdown).perform()
+    jsDropdownContent = driver.find_elements(
+        By.CSS_SELECTOR, Locators.jsDropdownContent
+    )
+    assert len(jsDropdownContent) == 3
+    for item in jsDropdownContent:
+        logger.info(item.text)
+        assert item.is_displayed and item.is_enabled
+
+    before_windows = len(driver.window_handles)
+    jsDropdownContent[0].click()
+    after_windows = len(driver.window_handles)
+    assert after_windows == before_windows + 1
 
 
 @pytest.mark.xfail(os.getenv("CI") == "true", reason="Expect fail on CI")

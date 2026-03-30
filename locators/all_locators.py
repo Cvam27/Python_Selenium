@@ -7,7 +7,6 @@ def customColumnLocatorGenerator(column_id :int):
 class Locators:
     userTable = '[id="resultTable"]'
     fileUpload = '[id="myFile"]'
-    dropdown = '[id="cars"]'
     alertButton = '//button[contains(text(),"Window Alert")]'
     searchableTable = '[class*="elementor-widget-shortcode"]'
     searchableTable_searchInput = '[id="dt-search-0"]'
@@ -16,6 +15,12 @@ class Locators:
     # User Table
     tableUsernameCell = '[id="resultTable"] tbody tr td:nth-child(2) a'
     tableHeader = '[id="resultTable"] th'
+
+    # Dropdowns
+    dropdown = '[id="cars"]'
+    jsDropdown = '[class="dropbtn"]'
+    jsDropdownContent = '[class="dropdown-content"] a'
+
 
 
 #     Shadow dom elements
