@@ -46,7 +46,10 @@ def test_iframe(driver):
     # test iFrame
     iframe = driver.find_element(By.CSS_SELECTOR, '[id="pact1"]')
     driver.switch_to.frame(iframe)
-    driver.find_element(By.CSS_SELECTOR, '[id="inp_val"]').send_keys("this is test")
+    firstCrushInput = driver.find_element(By.CSS_SELECTOR, Locators.firstCrushInput)
+    firstCrushInput.send_keys("this is test")
+    assert firstCrushInput.get_property("value") is not None
+    log.info("Input value: %s ", firstCrushInput.get_property("value"))
 
     # test nested iframe
     nested_iframe = driver.find_element(By.CSS_SELECTOR, '[id="pact2"]')
