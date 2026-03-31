@@ -11,6 +11,7 @@ class Locators:
     searchableTable = '[class*="elementor-widget-shortcode"]'
     searchableTable_searchInput = '[id="dt-search-0"]'
     searchableTable_OSColumn = '[id="tablepress-1"] tr > td:nth-child(2)'
+    firstCrushInput = '[id="inp_val"]'
 
     # User Table
     tableUsernameCell = '[id="resultTable"] tbody tr td:nth-child(2) a'
