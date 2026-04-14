@@ -11,12 +11,16 @@ def removeDupeString():
 
 def sortList():
     data = ["apple", "kiwi", "banana", "fig"]
-    print(sorted(data, key=len))
+    return (sorted(data, key=len))
+
+print(sortList())
+
 
 # sortList
 import  re
 
 data = 'abc12xyz34p5'
 
-numbersOnly = re.findall(r"\d+",data)
-print(sum(map(int,numbersOnly)))
+numbersOnly = re.findall(r"\d+.",data)
+# print(sum(map(int,numbersOnly)))
+
